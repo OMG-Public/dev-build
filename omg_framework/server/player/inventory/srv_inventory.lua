@@ -31,16 +31,27 @@ end
 
 function AddItemToPlayerInv(id, item, _count)
     if DoesItemExist(item) then
-        local inv = PlayersData[id].inventory
+        local player = _player_get_identifier(id)
+        local inv = PlayersData[player].inventory
         local invWeight = GetInvWeight(inv)
-        local itemWeight = GetItemWeight(item, count)
+        local itemWeight = GetItemWeight(item, _count)
+        DebugPrint(invWeight, itemWeight, invWeight + itemWeight)
         if invWeight + itemWeight <= omg_framework._default_player_max_weight then
-            local countOld, num = GetItemCount(id, item)
+            local countOld, num = GetItemCount(item, inv)
             if countOld == 0 then
                 table.insert(inv, {name = item, count = _count})
             else
+                DebugPrint(countOld, _count, countOld + _count)
                 table.remove(inv, num)
                 table.insert(inv, {name = item, count = countOld + _count})
+            end
+
+            PlayersData[player].inventory = inv
+
+            -- To remove later 
+            local inv = PlayersData[player].inventory
+            for k,v in pairs(inv) do
+                DebugPrint(v.name, v.count)
             end
         else
             -- To do notification if can not hold the item
@@ -50,12 +61,11 @@ end
 
 
 function GetInvWeight(inv)
-    local inv = PlayersData[id].inventory
     local weight = 0
     for _,v in pairs(inv) do
         for _, i in pairs(items) do
             local itemWeight = i.weight
-            local weight = itemWeight * v.count
+            weight = itemWeight * v.count
         end
     end
     return weight
@@ -71,8 +81,7 @@ function GetItemWeight(item, count)
 end
 
 
-function GetItemCount(id, item)
-    local inv = PlayersData[id].inventory
+function GetItemCount(item, inv)
     local found = false
     for k,v in pairs(inv) do 
         if v.name == item then
@@ -108,3 +117,11 @@ function DecodeInventory(inv)
     local JsonToTable = json.decode(inv)
     return JsonToTable
 end 
+
+
+local debug = true
+function DebugPrint(text)
+    if debug then
+        print(text)
+    end
+end
