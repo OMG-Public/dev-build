@@ -33,8 +33,8 @@ server_scripts {
     'server/core/*.lua',
     -- Anticheat
     'server/anticheat/*.lua',
-	-- Locale
     'server/player/player_position/server_position.lua',
+    'server/player/inventory/*.lua',
 	-- Locale
     'language/*.lua',
 }
