@@ -25,6 +25,7 @@ files {
 }
 
 server_scripts {
+
 	'@mysql-async/lib/MySQL.lua',
 	'config.lua',
 	'version.lua',
@@ -35,8 +36,10 @@ server_scripts {
     'server/anticheat/*.lua',
     'server/player/player_position/server_position.lua',
     'server/player/inventory/*.lua',
-	-- Locale
-    'language/*.lua',
+    -- Locale
+    'language/language.lua',
+    'language/english.lua',
+    'language/portuguese.lua',
 }
 
 client_scripts {
@@ -46,8 +49,10 @@ client_scripts {
 	'client/*.lua',
 	-- Player
     'client/player/player_position/client_position.lua',
-	-- Locale
-    'language/*.lua',
+    -- Locale
+    'language/language.lua',
+    'language/english.lua',
+    'language/portuguese.lua',
 }
 
 server_exports {

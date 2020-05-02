@@ -1,5 +1,5 @@
 Citizen.CreateThread(function()
-    TriggerServerEvent("OMG:TokenSync")
+    TriggerServerEvent("OMG:SyncClient") -- Sync the client
 end)
 
 

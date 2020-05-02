@@ -25,5 +25,5 @@ Locales['english'] = {
 	["add_bank_money"] = "Bank Money added",
 	["bank_money_removed"] = "Bank Money removed",
 	["remove_dirty_money"] = "Dirty money removed",
-	["add_diry_money"] = "Dirty money added"
+	["add_diry_money"] = "Dirty money added",
 }

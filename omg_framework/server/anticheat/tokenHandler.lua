@@ -15,6 +15,11 @@ end
 
 
 
+RegisterNetEvent("OMG:SyncClient")
+AddEventHandler("OMG:SyncClient", function()
+    TriggerClientEvent("OMG:SendToken", source, token) -- Client side
+    GetinventoryToCache(source)
+end)
 
 
 
@@ -35,10 +40,6 @@ local function GenerateToken()
 	return res
 end
 
-RegisterNetEvent("OMG:TokenSync")
-AddEventHandler("OMG:TokenSync", function()
-    TriggerClientEvent("OMG:SendToken", source, token) -- Client side
-end)
 
 Citizen.CreateThread(function()
     while true do
