@@ -26,7 +26,7 @@ end
 function _server_get_player_all_money(id)
     local player = _player_get_identifier(id)
     if playerInfoMoney[player] == nil then
-        local info = MySQL.Sync.fetchAll("SELECT * FROM player_account WHERE player_identifier = @identifier", {
+        local info = MySQL.Sync.fetchAll("SELECT * FROM player_account WHERE player_identifier = @identifier", { -- No need to SELECT * if we only need money, to change later
             ['@identifier'] = player
         })
         playerInfoMoney[player] = { ["player_money"] = info[1].player_money, ["player_bank_balance"] = info[1].player_bank_balance, ["player_dirty_money"] = info[1].player_dirty_money }
