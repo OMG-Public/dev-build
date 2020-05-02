@@ -14,7 +14,8 @@ CREATE TABLE `player_account` (
   `player_money` double NOT NULL DEFAULT '0',
   `player_bank_balance` int(32) DEFAULT '0',
   `player_dirty_money` double NOT NULL DEFAULT '0',
-  `player_job` varchar(50) NOT NULL DEFAULT 'police' /* WIP*/
+  `player_job` varchar(50) NOT NULL DEFAULT 'police', /* WIP*/
+  `player_inv` text DEFAULT '{}', /* WIP*/
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 -- --------------------------------------------------------

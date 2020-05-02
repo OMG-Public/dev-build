@@ -14,13 +14,14 @@ omg_framework = {
     _default_player_dirty_money = 0, -- Default player dirty money
     _default_player_job = 'police',
 
-    _default_player_max_weight = 50.0,
+    _default_player_max_weight = 50.0, -- Default player weight
 
 
 }
 
 
-
+-- All items with there weight
 items = {
-    {name="Bread", weight=0.1},
+    {name="Bread", weight=0.3},
+    {name="Apple", weight=0.2},
 }
