@@ -172,6 +172,13 @@ RegisterCommand('givebankmoney', function(source, args, rawCommand)
 end)
 
 
+RegisterCommand('giveitem', function(source, args, rawCommand)
+    if args[1] ~= nil then
+       TriggerServerEvent("OMG:GiveItem", token, tostring(args[1]), tonumber(args[2])) 
+    end
+end)
+
+
 function Notification(message,title)
     SetNotificationTextEntry("STRING")
     AddTextComponentString(message)
