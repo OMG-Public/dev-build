@@ -30,32 +30,24 @@ server_scripts {
 	'version.lua',
 	'version',
 	-- Core
-    'server/core/server.lua',
-    'server/core/server_export.lua',
+    'server/core/*.lua',
     -- Anticheat
-    'server/anticheat/tokenHandler.lua',
+    'server/anticheat/*.lua',
 	-- Locale
     'server/player/player_position/server_position.lua',
 	-- Locale
-    'language/language.lua',
-    'language/english.lua',
-    'language/portuguese.lua'
+    'language/*.lua',
 }
 
 client_scripts {
 	'config.lua',
 	-- Core
-    'client/core/client.lua',
-	'client/functions.lua',
-	'client/testingcommands.lua',
+    'client/core/*.lua',
+	'client/*.lua',
 	-- Player
     'client/player/player_position/client_position.lua',
-    -- Token getter
-    'client/tokenGetter.lua',
 	-- Locale
-    'language/language.lua',
-    'language/english.lua',
-    'language/portuguese.lua'
+    'language/*.lua',
 }
 
 server_exports {
