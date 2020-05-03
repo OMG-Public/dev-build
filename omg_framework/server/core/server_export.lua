@@ -14,23 +14,18 @@ end
 
 function _server_get_player_all_money(id)
     local player = _player_get_identifier(id)
-    if playerInfoMoney[player] == nil then
-        local info = MySQL.Sync.fetchAll("SELECT * FROM player_account WHERE player_identifier = @identifier", { -- No need to SELECT * if we only need money, to change later
-            ['@identifier'] = player
-        })
-        playerInfoMoney[player] = { ["player_money"] = info[1].player_money, ["player_bank_balance"] = info[1].player_bank_balance, ["player_dirty_money"] = info[1].player_dirty_money }
-    end
+    local playerInfoMoney[player] = { ["player_money"] = PlayersData[player].money, ["player_bank_balance"] = PlayersData[player].bankBalance, ["player_dirty_money"] = PlayersData[player].dirtyMoney }
     return playerInfoMoney[player]
 end
 
-function _server_refrech_player_money(id)
+function _server_refrech_player_money(id) -- not sure why we would need this ? Maybe if we make a change on the DB and the player is still connected ? Not sure.
     local player = _player_get_identifier(id)
-    local info = MySQL.Sync.fetchAll("SELECT * FROM player_account WHERE player_identifier = @identifier", {
+    local info = MySQL.Sync.fetchAll("SELECT player_account.player_money, player_account.player_bank_balance, player_account.player_dirty_money FROM player_account WHERE player_identifier = @identifier", {
         ['@identifier'] = player
     })
-    playerInfoMoney[player].player_money = info[1].player_money
-    playerInfoMoney[player].player_bank_balance = info[1].player_bank_balance
-    playerInfoMoney[player].player_dirty_money = info[1].player_dirty_money
+    PlayersData[player].money = info[1].player_money
+    PlayersData[player].bankBalance = info[1].player_bank_balance
+    PlayersData[player].dirtyMoney = info[1].player_dirty_money
 end
 
 function creation_utilisateur(id)
@@ -41,18 +36,21 @@ function creation_utilisateur(id)
         ['@player_bank_balance'] = tonumber(config.player_bank_balance),
         ['@dirtymoney'] = tonumber(config.player_dirty_money)
     })
-    playerInfoMoney[player] = { ["money"] = config.player_money, ["player_bank_balance"] = config.player_bank_balance, ["dirtymoney"] = config.player_dirty_money }
+    PlayersData[player].identifier = player
+    PlayersData[player].inventory = {}
+    PlayersData[player].money = tonumber(config.player_money)
+    PlayersData[player].bankBalance = tonumber(config.player_bank_balance)
+    PlayersData[player].dirtyMoney = tonumber(config.player_dirty_money)
+    PlayersData[player].job = omg_framework._default_player_job
+    PlayersData[player].group = omg_framework._default_player_group
+    PlayersData[player].permission = omg_framework._default_player_permission_level
 end
 
 
 -- Setter 
 function _player_remove_money(id, rmv)
     local player = _player_get_identifier(id)
-    playerInfoMoney[player].player_money = tonumber(playerInfoMoney[player].player_money - rmv)
-    MySQL.Async.execute("UPDATE player_account SET player_money = player_money - @rmv WHERE player_identifier = @identifier", {
-        ['@identifier'] = player,
-        ['@rmv'] = tonumber(rmv)
-    })
+    PlayersData[player].money = tonumber(PlayersData[player].money - rmv)
     TriggerClientEvent('OMG:rmvMoney', id, rmv)
     if omg_framework._display_logs == true then
         print('' .. _L("user") .. ' | '..player..' ' .. _L("remove_money_wallet") .. ' '..rmv)
@@ -67,11 +65,7 @@ end)
 function _player_add_money(tokenToCheck, id, add)
     if CheckToken(tokenToCheck, id) then
         local player = _player_get_identifier(id)
-        playerInfoMoney[player].player_money = tonumber(playerInfoMoney[player].player_money + add)
-        MySQL.Async.execute("UPDATE player_account SET player_money = player_money + @add WHERE player_identifier = @identifier", {
-            ['@identifier'] = player,
-            ['@add'] = tonumber(add)
-        })
+        PlayersData[player].money = tonumber(PlayersData[player].money + add)
         TriggerClientEvent('OMG:addMoney', id, add)
         if omg_framework._display_logs == true then
             print('' .. _L("user") .. ' |'..player..' ' .. _L("add_money_wallet") .. ' '..add)
@@ -87,11 +81,7 @@ end)
 function _player_add_bank_money(tokenToCheck, id, add)
     if CheckToken(tokenToCheck, id) then
         local player = _player_get_identifier(id)
-        playerInfoMoney[player].player_bank_balance = tonumber(playerInfoMoney[player].player_bank_balance + add)
-        MySQL.Async.execute("UPDATE player_account SET player_bank_balance = player_bank_balance + @add WHERE player_identifier = @identifier", {
-            ['@identifier'] = player,
-            ['@add'] = tonumber(add)
-        })
+        PlayersData[player].bankBalance = tonumber(PlayersData[player].bankBalance + add)
         TriggerClientEvent('OMG:addBank', id, add)
         if omg_framework._display_logs == true then
             print('' .. _L("user") .. ' |'..player..' ' .. _L("add_bank_money") .. ''..add)
@@ -107,11 +97,7 @@ end)
 function _player_remove_bank_money(tokenToCheck, id, rmv)
     if CheckToken(tokenToCheck, id) then
         local player = _player_get_identifier(id)
-        playerInfoMoney[player].player_bank_balance = tonumber(playerInfoMoney[player].player_bank_balance - rmv)
-        MySQL.Async.execute("UPDATE player_account SET player_bank_balance = player_bank_balance - @rmv WHERE player_identifier = @identifier", {
-            ['@identifier'] = player,
-            ['@rmv'] = tonumber(rmv)
-        })
+        PlayersData[player].bankBalance = tonumber(PlayersData[player].bankBalance - rmv)
         TriggerClientEvent('OMG:rmvBank', id, rmv)
         if omg_framework._display_logs == true then
             print('' .. _L("user") .. ' |'..player..' ' .. _L("bank_money_removed") .. ' '..rmv..'')
@@ -127,11 +113,7 @@ end)
 function _player_remove_dirty_money(tokenToCheck, id, add)
     if CheckToken(tokenToCheck, id) then
         local player = _player_get_identifier(id)
-        playerInfoMoney[player].player_dirty_money = tonumber(playerInfoMoney[player].player_dirty_money + add)
-        MySQL.Async.execute("UPDATE player_account SET player_dirty_money = player_dirty_money - @add WHERE player_identifier = @identifier", {
-            ['@identifier'] = player,
-            ['@add'] = tonumber(add)
-        })
+        PlayersData[player].dirtyMoney = tonumber(PlayersData[player].dirtyMoney + add)
         TriggerClientEvent('OMG:rmvDirtyMoney', id, add)
         if omg_framework._display_logs == true then
             print('' .. _L("user") .. ' |'..player..' ' .. _L("remove_dirty_money") .. ' '..add)
@@ -147,11 +129,7 @@ end)
 function _player_set_dirty_money(tokenToCheck, id, nb)
     if CheckToken(tokenToCheck, id) then
         local player = _player_get_identifier(id)
-        playerInfoMoney[player].player_dirty_money = tonumber(nb)
-        MySQL.Async.execute("UPDATE player_account SET player_dirty_money = @nb WHERE player_identifier = @identifier", {
-            ['@identifier'] = player,
-            ['@nb'] = tonumber(nb)
-        })
+        PlayersData[player].dirtyMoney = tonumber(nb)
         TriggerClientEvent('OMG:setDirtyMoney', id, nb)
         if omg_framework._display_logs == true then
             print('' .. _L("user") .. ' |'..player..' ' .. _L("add_dirty_money") .. ' '..nb)
@@ -167,12 +145,8 @@ end)
 function _player_remove_money_for_bank(tokenToCheck, id, rmv)
     if CheckToken(tokenToCheck, id) then
         local player = _player_get_identifier(id)
-        playerInfoMoney[player].player_money = tonumber(playerInfoMoney[player].player_money - rmv)
-        playerInfoMoney[player].player_bank_balance = tonumber(playerInfoMoney[player].player_bank_balance + rmv)
-        MySQL.Async.execute("UPDATE player_account SET player_bank_balance = player_bank_balance + @rmv, player_money = player_money - @rmv WHERE player_identifier = @identifier", {
-            ['@identifier'] = player,
-            ['@rmv'] = tonumber(rmv)
-        })
+        PlayersData[player].money = tonumber(PlayersData[player].money - rmv)
+        PlayersData[player].bankBalance = tonumber(PlayersData[player].bankBalance + rmv)
         TriggerClientEvent('OMG:removeMoneyForBank', id, tonumber(rmv))
     end
 end
@@ -185,12 +159,9 @@ end)
 function _player_remove_bank_for_money(tokenToCheck, id, rmv)
     if CheckToken(tokenToCheck, id) then
         local player = _player_get_identifier(id)
-        playerInfoMoney[player].player_money = tonumber(playerInfoMoney[player].player_money + rmv)
-        playerInfoMoney[player].player_bank_balance = tonumber(playerInfoMoney[player].player_bank_balance - rmv)
-        MySQL.Async.execute("UPDATE player_account SET player_bank_balance = player_bank_balance - @rmv, player_money = player_money + @rmv WHERE player_identifier = @identifier", {
-            ['@identifier'] = player,
-            ['@rmv'] = tonumber(rmv)
-        })
+        PlayersData[player].money = tonumber(PlayersData[player].money + rmv)
+        PlayersData[player].bankBalance = tonumber(PlayersData[player].bankBalance - rmv)
+
         TriggerClientEvent('OMG:removeBankForMoney', id, tonumber(rmv))
     end
 end
