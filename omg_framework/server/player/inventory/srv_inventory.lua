@@ -5,7 +5,7 @@ PlayersData = {} -- Global for now, maybe turning it local later if not needed
 -- Call this on player connexion
 function GetinventoryToCache(id)
     local player = _player_get_identifier(id)
-    PlayersData[player] = {}
+    PlayersData[player] = {} -- Init the player PlayerData or it will not work
     local info = MySQL.Sync.fetchAll("SELECT player_inv FROM player_account WHERE player_identifier = @identifier", {
         ['@identifier'] = player
     })
@@ -55,6 +55,34 @@ function AddItemToPlayerInv(id, item, _count)
             end
         else
             -- To do notification if can not hold the item
+        end
+    end
+end
+
+function RemoveItemFromPlayerInv(id, item, _count)
+    if DoesItemExist(item) then
+        local player = _player_get_identifier(id)
+        local inv = PlayersData[player].inventory
+        DebugPrint(invWeight, itemWeight, invWeight + itemWeight)
+
+        for k,v in pairs(inv) do
+            if v.name == item then
+                local count = v.count
+                if count - _count <= 0 then -- So we don't get player with negative items 
+                    table.remove(inv, k)
+                else
+                    table.remove(inv, k)
+                    table.insert(inv, {name = item, count = count - _count})
+                end
+            end
+        end
+
+        PlayersData[player].inventory = inv
+
+        -- To remove later / For debug only
+        local inv = PlayersData[player].inventory
+        for k,v in pairs(inv) do
+            DebugPrint(v.name, v.count)
         end
     end
 end
