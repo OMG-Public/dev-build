@@ -25,15 +25,15 @@ end
 RegisterServerEvent('OMG:spawn') 
 AddEventHandler('OMG:spawn', function()
     local source = source
-    local player = _server_get_player_data_info(source)
-    if player[1] ~= nil then
-        TriggerClientEvent('OMG:initializeinfo', source, player[1].player_money, player[1].player_dirty_money, player[1].player_bank_balance, player[1].player_job)
+    local player = _player_get_identifier(id)
+    if PlayersData[player] ~= nil then
+        TriggerClientEvent('OMG:initializeinfo', source, PlayersData[player].money, PlayersData[player].dirtyMoney, PlayersData[player].bankBalance, PlayersData[player].job)
     end
 end)
 
 AddEventHandler('playerConnecting', function(playerName, setKickReason)
     local source = source
-    local player = _server_get_player_data_info(source)
+    local player = GetPlayerInfoToCache(source)
     if player[1] == nil then
         creation_utilisateur(source)
 
@@ -64,7 +64,7 @@ AddEventHandler('playerDropped', function (reason)
     for k,v in pairs(PlayersData) do
         local i = i + 1
         if v.ServerID == source then
-            SavePlayerInventory(v.identifier, v.inventory)
+            SavePlayerCache(v.identifier, v)
             table.remove(PlayersData, i)
         end
     end
@@ -78,22 +78,48 @@ function SaveDynamicCache()
         if GetPlayerPing(v.ServerID) == 0 then -- If 0, that mean the player is not connected anymore (i suppose, need some test)
             table.remove(PlayersData, i)
         else
-            SavePlayerInventory(v.identifier, v.inventory)
+            SavePlayerCache(v.identifier, v)
         end
     end
 end
 
+
+-- Call this to save user infos to database (identifier + cache table)
+function SavePlayerCache(id, cache)
+    local encodedInv = EncodeInventory(cache.inventory)
+    MySQL.Async.execute("UPDATE player_account SET player_inv = @inv WHERE player_identifier = @identifier", {
+        ['@identifier'] = id,
+        ['@inv'] = encodedInv,
+        ['@money'] = cache.money,
+        ['@bankBalance'] = cache.bankBalance,
+        ['@dirtyMoney'] = cache.dirtyMoney,
+        ['@job'] = cache.job,
+        ['@group'] = cache.group,
+        ['@permission'] = cache.permission,
+    })
+
+    if omg_framework._display_logs then
+        print("Saving "..id.." cache: "..encodedInv)
+    end
+end
+
 -- Call this on player connexion
-function GetinventoryToCache(id)
+function GetPlayerInfoToCache(id)
     local player = _player_get_identifier(id)
     PlayersData[player] = {} -- Init the player PlayerData or it will not work
-    local info = MySQL.Sync.fetchAll("SELECT player_inv FROM player_account WHERE player_identifier = @identifier", {
+    local info = MySQL.Sync.fetchAll("SELECT * FROM player_account WHERE player_identifier = @identifier", {
         ['@identifier'] = player
     })
     
-    PlayersData[player].ServerID = id -- Will use this later to do dynamic cache logic
+    PlayersData[player].ServerID = id
     PlayersData[player].identifier = player
     PlayersData[player].inventory = DecodeInventory(info[1].player_inv)
+    PlayersData[player].money = info[1].player_money
+    PlayersData[player].bankBalance = info[1].player_bank_balance
+    PlayersData[player].dirtyMoney = info[1].player_dirty_money
+    PlayersData[player].job = info[1].player_job
+    PlayersData[player].group = info[1].player_group
+    PlayersData[player].permission = info[1].player_permission_level
     DebugPrint("Adding ["..id.."] "..GetPlayerName(id).." to dynamic cache.")
 end
 

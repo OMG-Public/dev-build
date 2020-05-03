@@ -1,19 +1,5 @@
 
 
--- Call this to save inventory to database (identifier + inventory table)
-function SavePlayerInventory(id, inv)
-    local encodedInv = EncodeInventory(inv)
-    MySQL.Async.execute("UPDATE player_account SET player_inv = @inv WHERE player_identifier = @identifier", {
-        ['@identifier'] = id,
-        ['@inv'] = encodedInv
-    })
-
-    if omg_framework._display_logs then
-        print("Saving "..id.." inventory: "..encodedInv)
-    end
-end
-
-
 function AddItemToPlayerInv(id, item, _count)
     if DoesItemExist(item) then
         local player = _player_get_identifier(id)
