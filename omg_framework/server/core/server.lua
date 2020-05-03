@@ -59,13 +59,15 @@ Citizen.CreateThread(function()
 end)
 
 
-AddEventHandler('playerDropped', function (reason)
+AddEventHandler('playerDropped', function(reason)
     local i = 0
     for k,v in pairs(PlayersData) do
         local i = i + 1
         if v.ServerID == source then
+            if omg_framework._display_logs then
+                print("Player "..v.ServerID.." dropped, saving data.")
+            end
             SavePlayerCache(v.identifier, v)
-            table.remove(PlayersData, i)
         end
     end
 end)
@@ -77,6 +79,9 @@ function SaveDynamicCache()
         local i = i + 1
         if GetPlayerPing(v.ServerID) == 0 then -- If 0, that mean the player is not connected anymore (i suppose, need some test)
             table.remove(PlayersData, i)
+            if omg_framework._display_logs then
+                print("Removing "..v.ServerID.." - "..i.." from dynamic cache.")
+            end
         else
             SavePlayerCache(v.identifier, v)
         end
@@ -87,7 +92,7 @@ end
 -- Call this to save user infos to database (identifier + cache table)
 function SavePlayerCache(id, cache)
     local encodedInv = EncodeInventory(cache.inventory)
-    MySQL.Async.execute("UPDATE player_account SET player_inv = @inv WHERE player_identifier = @identifier", {
+    MySQL.Async.execute("UPDATE player_account SET player_inv = @inv, player_money = @money, player_bank_balance = @bankBalance, player_dirty_money = @bankBalance, player_dirty_money = @dirtyMoney, player_job = @job, player_group = @group, player_permission_level = @permission WHERE player_identifier = @identifier", {
         ['@identifier'] = id,
         ['@inv'] = encodedInv,
         ['@money'] = cache.money,
