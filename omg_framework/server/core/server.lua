@@ -99,7 +99,7 @@ function SavePlayerCache(id, cache)
     })
 
     if omg_framework._display_logs then
-        print("Saving "..id.." cache: "..encodedInv)
+        print("Saving "..id.." cache: "..encodedInv, cache.money, cache.bankBalance, cache.dirtyMoney, cache.job, cache.group, cache.permission)
     end
 end
 
