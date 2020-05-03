@@ -25,7 +25,7 @@ end
 RegisterServerEvent('OMG:spawn') 
 AddEventHandler('OMG:spawn', function()
     local source = source
-    local player = _player_get_identifier(id)
+    local player = _player_get_identifier(source)
     if PlayersData[player] ~= nil then
         TriggerClientEvent('OMG:initializeinfo', source, PlayersData[player].money, PlayersData[player].dirtyMoney, PlayersData[player].bankBalance, PlayersData[player].job)
     end
