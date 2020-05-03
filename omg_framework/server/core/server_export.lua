@@ -42,7 +42,8 @@ end
 -- Setter 
 function _player_remove_money(id, rmv)
     local player = _player_get_identifier(id)
-    PlayersData[id].money = tonumber(PlayersData[player].money - rmv)
+    local pCache = GetPlayerCache(id) 
+    PlayersData[pCache].money = tonumber(PlayersData[pCache].money - rmv)
     TriggerClientEvent('OMG:rmvMoney', id, rmv)
     if omg_framework._display_logs == true then
         print('' .. _L("user") .. ' | '..player..' ' .. _L("remove_money_wallet") .. ' '..rmv)
@@ -57,7 +58,8 @@ end)
 function _player_add_money(tokenToCheck, id, add)
     if CheckToken(tokenToCheck, id) then
         local player = _player_get_identifier(id)
-        PlayersData[id].money = tonumber(PlayersData[id].money + add)
+        local pCache = GetPlayerCache(id) 
+        PlayersData[pCache].money = tonumber(PlayersData[pCache].money + add)
         TriggerClientEvent('OMG:addMoney', id, add)
         if omg_framework._display_logs == true then
             print('' .. _L("user") .. ' |'..player..' ' .. _L("add_money_wallet") .. ' '..add)
@@ -73,7 +75,8 @@ end)
 function _player_add_bank_money(tokenToCheck, id, add)
     if CheckToken(tokenToCheck, id) then
         local player = _player_get_identifier(id)
-        PlayersData[id].bankBalance = tonumber(PlayersData[id].bankBalance + add)
+        local pCache = GetPlayerCache(id)
+        PlayersData[pCache].bankBalance = tonumber(PlayersData[pCache].bankBalance + add)
         TriggerClientEvent('OMG:addBank', id, add)
         if omg_framework._display_logs == true then
             print('' .. _L("user") .. ' |'..player..' ' .. _L("add_bank_money") .. ''..add)
@@ -89,7 +92,8 @@ end)
 function _player_remove_bank_money(tokenToCheck, id, rmv)
     if CheckToken(tokenToCheck, id) then
         local player = _player_get_identifier(id)
-        PlayersData[id].bankBalance = tonumber(PlayersData[id].bankBalance - rmv)
+        local pCache = GetPlayerCache(id)
+        PlayersData[pCache].bankBalance = tonumber(PlayersData[pCache].bankBalance - rmv)
         TriggerClientEvent('OMG:rmvBank', id, rmv)
         if omg_framework._display_logs == true then
             print('' .. _L("user") .. ' |'..player..' ' .. _L("bank_money_removed") .. ' '..rmv..'')
@@ -105,7 +109,8 @@ end)
 function _player_remove_dirty_money(tokenToCheck, id, add)
     if CheckToken(tokenToCheck, id) then
         local player = _player_get_identifier(id)
-        PlayersData[id].dirtyMoney = tonumber(PlayersData[id].dirtyMoney + add)
+        local pCache = GetPlayerCache(id)
+        PlayersData[pCache].dirtyMoney = tonumber(PlayersData[pCache].dirtyMoney + add)
         TriggerClientEvent('OMG:rmvDirtyMoney', id, add)
         if omg_framework._display_logs == true then
             print('' .. _L("user") .. ' |'..player..' ' .. _L("remove_dirty_money") .. ' '..add)
@@ -121,7 +126,8 @@ end)
 function _player_set_dirty_money(tokenToCheck, id, nb)
     if CheckToken(tokenToCheck, id) then
         local player = _player_get_identifier(id)
-        PlayersData[id].dirtyMoney = tonumber(nb)
+        local pCache = GetPlayerCache(id)
+        PlayersData[pCache].dirtyMoney = tonumber(nb)
         TriggerClientEvent('OMG:setDirtyMoney', id, nb)
         if omg_framework._display_logs == true then
             print('' .. _L("user") .. ' |'..player..' ' .. _L("add_dirty_money") .. ' '..nb)
@@ -137,8 +143,9 @@ end)
 function _player_remove_money_for_bank(tokenToCheck, id, rmv)
     if CheckToken(tokenToCheck, id) then
         local player = _player_get_identifier(id)
-        PlayersData[id].money = tonumber(PlayersData[id].money - rmv)
-        PlayersData[id].bankBalance = tonumber(PlayersData[id].bankBalance + rmv)
+        local pCache = GetPlayerCache(id)
+        PlayersData[pCache].money = tonumber(PlayersData[pCache].money - rmv)
+        PlayersData[pCache].bankBalance = tonumber(PlayersData[pCache].bankBalance + rmv)
         TriggerClientEvent('OMG:removeMoneyForBank', id, tonumber(rmv))
     end
 end
@@ -151,8 +158,9 @@ end)
 function _player_remove_bank_for_money(tokenToCheck, id, rmv)
     if CheckToken(tokenToCheck, id) then
         local player = _player_get_identifier(id)
-        PlayersData[id].money = tonumber(PlayersData[id].money + rmv)
-        PlayersData[id].bankBalance = tonumber(PlayersData[id].bankBalance - rmv)
+        local pCache = GetPlayerCache(id)
+        PlayersData[pCache].money = tonumber(PlayersData[pCache].money + rmv)
+        PlayersData[pCache].bankBalance = tonumber(PlayersData[pCache].bankBalance - rmv)
 
         TriggerClientEvent('OMG:removeBankForMoney', id, tonumber(rmv))
     end

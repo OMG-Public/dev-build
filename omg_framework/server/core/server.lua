@@ -143,3 +143,10 @@ function GetPlayerInfoToCache(id)
     end
 end
 
+function GetPlayerCache(id)
+    for k,v in pairs(PlayersData) do
+        if v.ServerID == id then
+            return k
+        end
+    end
+end
