@@ -36,14 +36,7 @@ function creation_utilisateur(id)
         ['@player_bank_balance'] = tonumber(config.player_bank_balance),
         ['@dirtymoney'] = tonumber(config.player_dirty_money)
     })
-    PlayersData[player].identifier = player
-    PlayersData[player].inventory = {}
-    PlayersData[player].money = tonumber(config.player_money)
-    PlayersData[player].bankBalance = tonumber(config.player_bank_balance)
-    PlayersData[player].dirtyMoney = tonumber(config.player_dirty_money)
-    PlayersData[player].job = omg_framework._default_player_job
-    PlayersData[player].group = omg_framework._default_player_group
-    PlayersData[player].permission = omg_framework._default_player_permission_level
+    GetPlayerInfoToCache(id)
 end
 
 
