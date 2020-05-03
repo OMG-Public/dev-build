@@ -14,3 +14,11 @@ AddEventHandler("OMG:GiveItem", function(token, item, count)
         AddItemToPlayerInv(source, item, count)
     end
 end)
+
+
+RegisterNetEvent("OMG:RemoveItem")
+AddEventHandler("OMG:RemoveItem", function(token, item, count)
+    if CheckToken(token, source) then
+        RemoveItemFromPlayerInv(source, item, count)
+    end
+end)
