@@ -38,9 +38,11 @@ function GetinventoryToCache(id)
     local info = MySQL.Sync.fetchAll("SELECT player_inv FROM player_account WHERE player_identifier = @identifier", {
         ['@identifier'] = player
     })
+    
     PlayersData[player].ServerID = id -- Will use this later to do dynamic cache logic
     PlayersData[player].identifier = player
     PlayersData[player].inventory = DecodeInventory(info[1].player_inv)
+    DebugPrint("Adding ["..id.."] "..GetPlayerName(id).." to dynamic cache.")
 end
 
 
@@ -48,13 +50,13 @@ end
 -- Call this to save inventory to database (identifier + inventory table)
 function SavePlayerInventory(id, inv)
     local encodedInv = EncodeInventory(inv)
-    MySQL.Async.execute("UPDATE player_inv SET player_inv = @inv WHERE player_identifier = @identifier", {
-        ['@identifier'] = identifier,
+    MySQL.Async.execute("UPDATE player_account SET player_inv = @inv WHERE player_identifier = @identifier", {
+        ['@identifier'] = id,
         ['@inv'] = encodedInv
     })
 
     if omg_framework._display_logs then
-        print("Saving "..id.." inventory")
+        print("Saving "..id.." inventory: "..encodedInv)
     end
 end
 
