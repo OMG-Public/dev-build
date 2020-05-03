@@ -174,13 +174,33 @@ end)
 
 RegisterCommand('giveitem', function(source, args, rawCommand)
     if args[1] ~= nil then
-       TriggerServerEvent("OMG:GiveItem", token, tostring(args[1]), tonumber(args[2])) 
+        local found = false
+        for k,v in pairs(items) do
+            if tostring(args[1]) == v.name then
+                found = true
+                TriggerServerEvent("OMG:GiveItem", token, tostring(args[1]), tonumber(args[2])) 
+                break
+            end
+        end
+        if not found then
+            Notify("Item "..tostring(args[1]).." do not exist.") -- to do language later, i let an other dev do it if you want.
+        end
     end
 end)
 
 RegisterCommand('removeitem', function(source, args, rawCommand)
     if args[1] ~= nil then
-       TriggerServerEvent("OMG:RemoveItem", token, tostring(args[1]), tonumber(args[2])) 
+        local found = false
+        for k,v in pairs(items) do
+            if tostring(args[1]) == v.name then
+                found = true
+                TriggerServerEvent("OMG:RemoveItem", token, tostring(args[1]), tonumber(args[2])) 
+                break
+            end
+        end
+        if not found then
+            Notify("Item "..tostring(args[1]).." do not exist.") -- to do language later, i let an other dev do it if you want.
+        end
     end
 end)
 
