@@ -111,16 +111,18 @@ function GetPlayerInfoToCache(id)
         ['@identifier'] = player
     })
     
-    PlayersData[player].ServerID = id
-    PlayersData[player].identifier = player
-    PlayersData[player].inventory = DecodeInventory(info[1].player_inv)
-    PlayersData[player].money = info[1].player_money
-    PlayersData[player].bankBalance = info[1].player_bank_balance
-    PlayersData[player].dirtyMoney = info[1].player_dirty_money
-    PlayersData[player].job = info[1].player_job
-    PlayersData[player].group = info[1].player_group
-    PlayersData[player].permission = info[1].player_permission_level
-    DebugPrint("Adding ["..id.."] "..GetPlayerName(id).." to dynamic cache.")
+    if info[1] ~= nil then
+        PlayersData[player].ServerID = id
+        PlayersData[player].identifier = player
+        PlayersData[player].inventory = DecodeInventory(info[1].player_inv)
+        PlayersData[player].money = info[1].player_money
+        PlayersData[player].bankBalance = info[1].player_bank_balance
+        PlayersData[player].dirtyMoney = info[1].player_dirty_money
+        PlayersData[player].job = info[1].player_job
+        PlayersData[player].group = info[1].player_group
+        PlayersData[player].permission = info[1].player_permission_level
+        DebugPrint("Adding ["..id.."] "..GetPlayerName(id).." to dynamic cache.")
+    end
     return info
 end
 
