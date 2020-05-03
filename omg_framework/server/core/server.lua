@@ -118,7 +118,7 @@ end
 function GetPlayerInfoToCache(id)
     local player = _player_get_identifier(id)
     table.insert(PlayersData, {ServerID = id})
-    --PlayersData[player] = {} -- Init the player PlayerData or it will not work
+
     local info = MySQL.Sync.fetchAll("SELECT * FROM player_account WHERE player_identifier = @identifier", {
         ['@identifier'] = player
     })
