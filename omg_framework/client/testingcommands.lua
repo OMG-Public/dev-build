@@ -178,6 +178,12 @@ RegisterCommand('giveitem', function(source, args, rawCommand)
     end
 end)
 
+RegisterCommand('removeitem', function(source, args, rawCommand)
+    if args[1] ~= nil then
+       TriggerServerEvent("OMG:RemoveItem", token, tostring(args[1]), tonumber(args[2])) 
+    end
+end)
+
 
 function Notification(message,title)
     SetNotificationTextEntry("STRING")
