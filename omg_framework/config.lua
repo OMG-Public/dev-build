@@ -6,7 +6,9 @@ config = {
 omg_framework = {
 
     _language = config.lang, -- Languege
-	_IPLs = true, -- Load IPLs (fix holes in the map)
+    _IPLs = true, -- Load IPLs (fix holes in the map)
+    _cacheSave = 3, -- Time in minutes
+    _positionSave = 10, -- Time in minutes
 
     _display_logs = config.debug, -- Display logs serveur (true / false)
 	
@@ -25,5 +27,3 @@ omg_framework = {
 
 
 }
-
-

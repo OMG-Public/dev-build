@@ -49,12 +49,10 @@ end)
 
 PlayersData = {} -- Global for now, maybe turning it local later if not needed
 
-local second = 1000
-local minute = 60*second
 Citizen.CreateThread(function()
     while true do
         SaveDynamicCache()
-        Wait(3*minute)
+        Wait(omg_framework._cacheSave*(60*1000))
     end
 end)
 
@@ -152,5 +150,24 @@ function GetPlayerCache(id)
         if v.ServerID == id then
             return k
         end
+    end
+end
+
+-- type 1 = urgant! error
+-- type 2 = success
+-- type 3 = debugging
+function Log(type, message)
+    if(config.debug) then
+        local str = ""
+        if(type == 1) then
+            str = "[^8OMG Logging^7] ^1"
+        elseif(type == 2) then
+            str = "[^2OMG Logging^7] "
+        elseif(type == 3 or type == nil) then
+            str = "[^4OMG Logging^7] "
+        end
+
+        str = str .. message
+        return str 
     end
 end
