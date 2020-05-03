@@ -12,17 +12,6 @@ function _player_get_identifier(id)
     return player
 end
 
-function _server_get_player_data_info(id)
-    local player = _player_get_identifier(id)
-    local info = MySQL.Sync.fetchAll("SELECT * FROM player_account WHERE player_identifier = @identifier", {
-        ['@identifier'] = player
-    })
-    if playerInfoMoney[player] == nil and info[1] ~= nil then
-        playerInfoMoney[player] = { ["player_money"] = info[1].player_money, ["player_bank_balance"] = info[1].player_bank_balance, ["player_dirty_money"] = info[1].player_dirty_money }
-    end
-    return info
-end
-
 function _server_get_player_all_money(id)
     local player = _player_get_identifier(id)
     if playerInfoMoney[player] == nil then

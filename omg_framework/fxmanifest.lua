@@ -60,7 +60,6 @@ client_scripts {
 server_exports {
     'getIdentifier',
     '_player_get_identifier',
-    '_server_get_player_data_info',
     '_server_get_player_all_money',
     '_server_refrech_player_money',
     '_player_remove_money',
