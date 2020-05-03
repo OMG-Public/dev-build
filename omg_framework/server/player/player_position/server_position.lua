@@ -32,12 +32,8 @@ AddEventHandler("OMG:SpawnPlayer", function()
     })
     if player_data[1].player_first_spawn == 'first_spawn' then
         if omg_framework._player_first_spawn_location ~= "" then
-            local ToSpawnPos = json.decode(omg_framework._player_first_spawn_location)
-            local PosX = ToSpawnPos[1]
-            local PosY = ToSpawnPos[2]
-            local PosZ = ToSpawnPos[3]
-            local PosH = ToSpawnPos[4]
-            TriggerClientEvent("OMG:spawn_last_position", source, 0, PosX, PosY, PosZ)
+            local pos = omg_framework._player_first_spawn_location
+            TriggerClientEvent("OMG:spawn_last_position", source, 0, pos.x, pos.y, pos.z)
 
             if omg_framework._display_logs == true then
                 print('' .. _L("new_spawn_user") .. ' | ' .. player)
@@ -50,7 +46,6 @@ AddEventHandler("OMG:SpawnPlayer", function()
         local PosX = ToSpawnPos[1]
         local PosY = ToSpawnPos[2]
         local PosZ = ToSpawnPos[3]
-        local PosH = ToSpawnPos[4]
         TriggerClientEvent("OMG:spawn_last_position", source, 1, PosX, PosY, PosZ)
         if omg_framework._display_logs == true then
             print('' .. _L("user_reconnect") .. ' | '..player..' ' .. _L("user_reconnect2") .. '')
