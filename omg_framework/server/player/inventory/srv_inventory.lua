@@ -12,19 +12,23 @@ end)
 
 
 AddEventHandler('playerDropped', function (reason)
+    local i = 0
     for k,v in pairs(PlayersData) do
+        local i = i + 1
         if v.ServerID == source then
             SavePlayerInventory(v.identifier, v.inventory)
-            table.remove(PlayersData, k)
+            table.remove(PlayersData, i)
         end
     end
 end)
 
 
 function SaveDynamicCache()
+    local i = 0
     for k,v in pairs(PlayersData) do
+        local i = i + 1
         if GetPlayerPing(v.ServerID) == 0 then -- If 0, that mean the player is not connected anymore (i suppose, need some test)
-            table.remove(PlayersData, k)
+            table.remove(PlayersData, i)
         else
             SavePlayerInventory(v.identifier, v.inventory)
         end
