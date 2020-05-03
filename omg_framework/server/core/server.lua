@@ -90,7 +90,7 @@ end
 -- Call this to save user infos to database (identifier + cache table)
 function SavePlayerCache(id, cache)
     local encodedInv = EncodeInventory(cache.inventory)
-    MySQL.Async.execute("UPDATE player_account SET player_inv = @inv, player_money = @money, player_bank_balance = @bankBalance, player_dirty_money = @bankBalance, player_dirty_money = @dirtyMoney, player_job = @job, player_group = @group, player_permission_level = @permission WHERE player_identifier = @identifier", {
+    MySQL.Async.execute("UPDATE player_account SET player_position = @pos, player_inv = @inv, player_money = @money, player_bank_balance = @bankBalance, player_dirty_money = @bankBalance, player_dirty_money = @dirtyMoney, player_job = @job, player_group = @group, player_permission_level = @permission WHERE player_identifier = @identifier", {
         ['@identifier'] = id,
         ['@inv'] = encodedInv,
         ['@money'] = cache.money,
@@ -99,6 +99,7 @@ function SavePlayerCache(id, cache)
         ['@job'] = cache.job,
         ['@group'] = cache.group,
         ['@permission'] = cache.permission,
+        ['@pos'] = cache.pos,
     })
 
     if omg_framework._display_logs then
@@ -136,7 +137,10 @@ function GetPlayerInfoToCache(id)
                 v.job = info[1].player_job
                 v.group = info[1].player_group
                 v.permission = info[1].player_permission_level
-                DebugPrint("Adding ["..id.."] "..GetPlayerName(id).." to dynamic cache.")
+                v.pos = info[1].player_position
+                if omg_framework._display_logs then
+                    print("Adding ["..id.."] "..GetPlayerName(id).." to dynamic cache.")
+                end
                 return v
             end
         end
