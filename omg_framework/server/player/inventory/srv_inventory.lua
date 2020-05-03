@@ -49,9 +49,8 @@ function AddItemToPlayerInv(id, item, _count)
             PlayersData[player].inventory = inv
 
             -- To remove later 
-            local inv = PlayersData[player].inventory
-            for k,v in pairs(inv) do
-                DebugPrint(v.name, v.count)
+            for k,v in pairs(PlayersData[player].inventory) do
+                DebugPrint(""..v.name.." - x"..v.count.."")
             end
         else
             -- To do notification if can not hold the item
@@ -63,7 +62,6 @@ function RemoveItemFromPlayerInv(id, item, _count)
     if DoesItemExist(item) then
         local player = _player_get_identifier(id)
         local inv = PlayersData[player].inventory
-        DebugPrint(invWeight, itemWeight, invWeight + itemWeight)
 
         for k,v in pairs(inv) do
             if v.name == item then
@@ -80,9 +78,8 @@ function RemoveItemFromPlayerInv(id, item, _count)
         PlayersData[player].inventory = inv
 
         -- To remove later / For debug only
-        local inv = PlayersData[player].inventory
-        for k,v in pairs(inv) do
-            DebugPrint(v.name, v.count)
+        for k,v in pairs(PlayersData[player].inventory) do
+            DebugPrint(""..v.name.." - x"..v.count.."")
         end
     end
 end
