@@ -1,12 +1,21 @@
 local firstspawn = 0
 local loaded = false
 
+
+local OldCoords = nil
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(30000)
-        local LastPosX, LastPosY, LastPosZ = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
+        Citizen.Wait(10*1000)
+        local Lastpos = GetEntityCoords(GetPlayerPed(-1), true)
         local LastPosH = GetEntityHeading(GetPlayerPed(-1))
-        TriggerServerEvent("OMG:save_position", LastPosX, LastPosY, LastPosZ, LastPosH)
+        if OldCoords == nil then
+            OldCoords = Lastpos
+        else
+            local dst = GetDistanceBetweenCoords(OldCoords, Lastpos, true)
+            if dst >= 10.0 then
+                TriggerServerEvent("OMG:save_position", LastPosX, LastPosY, LastPosZ, LastPosH)
+            end
+        end 
     end
 end)
 
