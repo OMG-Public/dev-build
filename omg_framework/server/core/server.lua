@@ -1,4 +1,4 @@
-AddEventHandler('onMySQLReady', function()
+Citizen.CreateThread(function()
     config = {
         player_money = omg_framework._default_player_money,
         player_bank_balance = omg_framework._default_player_bank_balance,
@@ -121,5 +121,6 @@ function GetPlayerInfoToCache(id)
     PlayersData[player].group = info[1].player_group
     PlayersData[player].permission = info[1].player_permission_level
     DebugPrint("Adding ["..id.."] "..GetPlayerName(id).." to dynamic cache.")
+    return info
 end
 
