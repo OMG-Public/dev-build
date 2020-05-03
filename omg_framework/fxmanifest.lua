@@ -27,7 +27,8 @@ files {
 server_scripts {
 
 	'@mysql-async/lib/MySQL.lua',
-	'config.lua',
+    'config.lua',
+    'items.lua',
 	'version.lua',
 	'version',
 	-- Core
