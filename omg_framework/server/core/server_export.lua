@@ -12,10 +12,10 @@ function _player_get_identifier(id)
     return player
 end
 
+-- Sending back money / bank / dirty money
 function _server_get_player_all_money(id)
     local player = _player_get_identifier(id)
-    local playerInfoMoney[player] = { ["player_money"] = PlayersData[player].money, ["player_bank_balance"] = PlayersData[player].bankBalance, ["player_dirty_money"] = PlayersData[player].dirtyMoney }
-    return playerInfoMoney[player]
+    return PlayersData[player].money, PlayersData[player].bankBalance, PlayersData[player].dirtyMoney
 end
 
 function _server_refrech_player_money(id) -- not sure why we would need this ? Maybe if we make a change on the DB and the player is still connected ? Not sure.
