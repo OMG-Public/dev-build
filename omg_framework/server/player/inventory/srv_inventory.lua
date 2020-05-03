@@ -122,7 +122,7 @@ function DecodeInventory(inv)
 end 
 
 
-local debug = true
+local debug = false
 function DebugPrint(text)
     if debug then
         print(text)
