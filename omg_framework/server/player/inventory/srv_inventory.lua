@@ -3,7 +3,7 @@
 function AddItemToPlayerInv(id, item, _count)
     if DoesItemExist(item) then
         local player = _player_get_identifier(id)
-        local inv = PlayersData[player].inventory
+        local inv, place = GetInventoryFromCache(id)
         local invWeight = GetInvWeight(inv)
         local itemWeight = GetItemWeight(item, _count)
         DebugPrint(invWeight, itemWeight, invWeight + itemWeight)
@@ -17,10 +17,10 @@ function AddItemToPlayerInv(id, item, _count)
                 table.insert(inv, {name = item, count = countOld + _count})
             end
 
-            PlayersData[player].inventory = inv
+            PlayersData[place].inventory = inv
 
             -- To remove later 
-            for k,v in pairs(PlayersData[player].inventory) do
+            for k,v in pairs(PlayersData[place].inventory) do
                 DebugPrint(""..v.name.." - x"..v.count.."")
             end
         else
@@ -32,7 +32,7 @@ end
 function RemoveItemFromPlayerInv(id, item, _count)
     if DoesItemExist(item) then
         local player = _player_get_identifier(id)
-        local inv = PlayersData[player].inventory
+        local inv, place = GetInventoryFromCache(id)
 
         for k,v in pairs(inv) do
             if v.name == item then
@@ -46,15 +46,22 @@ function RemoveItemFromPlayerInv(id, item, _count)
             end
         end
 
-        PlayersData[player].inventory = inv
+        PlayersData[place].inventory = inv
 
         -- To remove later / For debug only
-        for k,v in pairs(PlayersData[player].inventory) do
+        for k,v in pairs(PlayersData[place].inventory) do
             DebugPrint(""..v.name.." - x"..v.count.."")
         end
     end
 end
 
+function GetInventoryFromCache(id)
+    for k,v in pairs(PlayersData) do
+        if v.ServerID == id then
+            return v.inventory, k
+        end
+    end
+end
 
 function GetInvWeight(inv)
     local weight = 0

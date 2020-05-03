@@ -26,14 +26,14 @@ RegisterServerEvent('OMG:spawn')
 AddEventHandler('OMG:spawn', function()
     local source = source
     local player = _player_get_identifier(source)
-    if PlayersData[player] ~= nil then
-        TriggerClientEvent('OMG:initializeinfo', source, PlayersData[player].money, PlayersData[player].dirtyMoney, PlayersData[player].bankBalance, PlayersData[player].job)
-    end
+    local pCache = GetPlayerInfoToCache(source)
+    TriggerClientEvent('OMG:initializeinfo', source, pCache.money, pCache.dirtyMoney, pCache.bankBalance, pCache.job)
+    TriggerClientEvent("OMG:SendToken", source, token) -- Client side
 end)
 
 AddEventHandler('playerConnecting', function(playerName, setKickReason)
     local source = source
-    local player = GetPlayerInfoToCache(source)
+    local player = DoesPlayerExisit(source)
     if player[1] == nil then
         creation_utilisateur(source)
 
@@ -54,15 +54,13 @@ local minute = 60*second
 Citizen.CreateThread(function()
     while true do
         SaveDynamicCache()
-        Wait(1*minute)
+        Wait(10*second)
     end
 end)
 
 
 AddEventHandler('playerDropped', function(reason)
-    local i = 0
     for k,v in pairs(PlayersData) do
-        local i = i + 1
         if v.ServerID == source then
             if omg_framework._display_logs then
                 print("Player "..v.ServerID.." dropped, saving data.")
@@ -74,14 +72,14 @@ end)
 
 
 function SaveDynamicCache()
-    local i = 0
+    local loop = 0
     for k,v in pairs(PlayersData) do
-        local i = i + 1
+        loop = loop + 1
         if GetPlayerPing(v.ServerID) == 0 then -- If 0, that mean the player is not connected anymore (i suppose, need some test)
-            table.remove(PlayersData, i)
             if omg_framework._display_logs then
-                print("Removing "..v.ServerID.." - "..i.." from dynamic cache.")
+                print("Removing "..v.ServerID.." - "..loop.." from dynamic cache.")
             end
+            table.remove(PlayersData, k)
         else
             SavePlayerCache(v.identifier, v)
         end
@@ -108,26 +106,40 @@ function SavePlayerCache(id, cache)
     end
 end
 
+
+function DoesPlayerExisit(id)
+    local player = _player_get_identifier(id)
+    local info = MySQL.Sync.fetchAll("SELECT * FROM player_account WHERE player_identifier = @identifier", {
+        ['@identifier'] = player
+    })
+    return info
+end
+
 -- Call this on player connexion
 function GetPlayerInfoToCache(id)
     local player = _player_get_identifier(id)
-    PlayersData[player] = {} -- Init the player PlayerData or it will not work
+    table.insert(PlayersData, {ServerID = id})
+    --PlayersData[player] = {} -- Init the player PlayerData or it will not work
     local info = MySQL.Sync.fetchAll("SELECT * FROM player_account WHERE player_identifier = @identifier", {
         ['@identifier'] = player
     })
     
     if info[1] ~= nil then
-        PlayersData[player].ServerID = id
-        PlayersData[player].identifier = player
-        PlayersData[player].inventory = DecodeInventory(info[1].player_inv)
-        PlayersData[player].money = info[1].player_money
-        PlayersData[player].bankBalance = info[1].player_bank_balance
-        PlayersData[player].dirtyMoney = info[1].player_dirty_money
-        PlayersData[player].job = info[1].player_job
-        PlayersData[player].group = info[1].player_group
-        PlayersData[player].permission = info[1].player_permission_level
-        DebugPrint("Adding ["..id.."] "..GetPlayerName(id).." to dynamic cache.")
+        for k,v in pairs(PlayersData) do
+            if v.ServerID == id then
+                v.ServerID = id
+                v.identifier = player
+                v.inventory = DecodeInventory(info[1].player_inv)
+                v.money = info[1].player_money
+                v.bankBalance = info[1].player_bank_balance
+                v.dirtyMoney = info[1].player_dirty_money
+                v.job = info[1].player_job
+                v.group = info[1].player_group
+                v.permission = info[1].player_permission_level
+                DebugPrint("Adding ["..id.."] "..GetPlayerName(id).." to dynamic cache.")
+                return v
+            end
+        end
     end
-    return info
 end
 
