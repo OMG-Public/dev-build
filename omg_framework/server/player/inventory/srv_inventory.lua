@@ -21,7 +21,7 @@ function AddItemToPlayerInv(id, item, _count)
 
             -- To remove later 
             for k,v in pairs(PlayersData[place].inventory) do
-                DebugPrint(""..v.name.." - x"..v.count.."")
+                DebugPrint(v.name.." - x"..v.count)
             end
         else
             -- To do notification if can not hold the item
@@ -50,7 +50,7 @@ function RemoveItemFromPlayerInv(id, item, _count)
 
         -- To remove later / For debug only
         for k,v in pairs(PlayersData[place].inventory) do
-            DebugPrint(""..v.name.." - x"..v.count.."")
+            DebugPrint(v.name.." - x"..v.count)
         end
     end
 end

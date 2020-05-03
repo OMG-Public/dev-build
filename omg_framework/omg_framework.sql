@@ -1,7 +1,7 @@
 CREATE DATABASE `OMG`;
 USE `OMG`;
 
--- --------------------------------------------------------
+----------------------------------------------------------
 
 CREATE TABLE `player_account` (
   `id` int(11) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE `player_account` (
   `player_inv` text DEFAULT NULL /* WIP*/
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
--- --------------------------------------------------------
+----------------------------------------------------------
 
 ALTER TABLE `player_account`
   ADD PRIMARY KEY (`id`);
