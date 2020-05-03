@@ -54,7 +54,7 @@ local minute = 60*second
 Citizen.CreateThread(function()
     while true do
         SaveDynamicCache()
-        Wait(10*second)
+        Wait(3*minute)
     end
 end)
 
