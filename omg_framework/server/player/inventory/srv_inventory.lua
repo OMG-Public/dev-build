@@ -1,6 +1,35 @@
 
 PlayersData = {} -- Global for now, maybe turning it local later if not needed
 
+local second = 1000
+local minute = 60*second
+Citizen.CreateThread(function()
+    while true do
+        SaveDynamicCache()
+        Wait(1*minute)
+    end
+end)
+
+
+AddEventHandler('playerDropped', function (reason)
+    for k,v in pairs(PlayersData) do
+        if v.ServerID == source then
+            SavePlayerInventory(v.identifier, v.inventory)
+            table.remove(PlayersData, k)
+        end
+    end
+end)
+
+
+function SaveDynamicCache()
+    for k,v in pairs(PlayersData) do
+        if GetPlayerPing(v.ServerID) == 0 then -- If 0, that mean the player is not connected anymore (i suppose, need some test)
+            table.remove(PlayersData, k)
+        else
+            SavePlayerInventory(v.identifier, v.inventory)
+        end
+    end
+end
 
 -- Call this on player connexion
 function GetinventoryToCache(id)
@@ -9,22 +38,23 @@ function GetinventoryToCache(id)
     local info = MySQL.Sync.fetchAll("SELECT player_inv FROM player_account WHERE player_identifier = @identifier", {
         ['@identifier'] = player
     })
+    PlayersData[player].ServerID = id -- Will use this later to do dynamic cache logic
+    PlayersData[player].identifier = player
     PlayersData[player].inventory = DecodeInventory(info[1].player_inv)
 end
 
 
 
--- Call this to save inventory to database (Server id + inventory table)
+-- Call this to save inventory to database (identifier + inventory table)
 function SavePlayerInventory(id, inv)
-    local player = _player_get_identifier(id)
     local encodedInv = EncodeInventory(inv)
     MySQL.Async.execute("UPDATE player_inv SET player_inv = @inv WHERE player_identifier = @identifier", {
-        ['@identifier'] = player,
+        ['@identifier'] = identifier,
         ['@inv'] = encodedInv
     })
 
     if omg_framework._display_logs then
-        print("Saving "..GetPlayerName(id).." inventory")
+        print("Saving "..id.." inventory")
     end
 end
 
