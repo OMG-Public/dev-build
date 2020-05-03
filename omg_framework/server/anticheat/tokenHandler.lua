@@ -26,8 +26,8 @@ end
 
 local function GenerateToken()
 	local res = ""
-	for i = 1, 15 do
-		res = res .. string.char(math.random(97, 122))
+	for i = 1, 20 do
+		res = res .. string.char(math.random(97, 122)) .. math.random(1,9)
 	end
 	return res
 end
