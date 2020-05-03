@@ -12,6 +12,11 @@ function _player_get_identifier(id)
     return player
 end
 
+-- Export Config
+function Config()
+    return config
+end
+
 -- Sending back money / bank / dirty money
 function _server_get_player_all_money(id)
     local player = _player_get_identifier(id)

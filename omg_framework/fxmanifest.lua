@@ -71,7 +71,8 @@ server_exports {
     '_player_set_dirty_money',
     '_player_remove_money_for_bank',
     '_player_remove_bank_for_money',
-    'save_player_position'
+    'save_player_position',
+    'Config'
 }
 
 dependencies {

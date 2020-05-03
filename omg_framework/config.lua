@@ -1,9 +1,14 @@
+config = {
+    lang = "english",
+    debug = true
+}
+
 omg_framework = {
 
-    _language = 'english', -- Languege
+    _language = config.lang, -- Languege
 	_IPLs = true, -- Load IPLs (fix holes in the map)
 
-    _display_logs = true, -- Display logs serveur (true / false)
+    _display_logs = config.debug, -- Display logs serveur (true / false)
 	
     _sufix = 'OMG Framework', -- Sufix / Server Name
 
