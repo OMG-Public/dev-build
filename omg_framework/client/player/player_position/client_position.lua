@@ -6,7 +6,7 @@ local OldCoords = nil
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(10*1000)
-        local Lastpos = GetEntityCoords(GetPlayerPed(-1), true)
+        local Lastpos = GetEntityCoords(GetPlayerPed(-1))
         local LastPosH = GetEntityHeading(GetPlayerPed(-1))
         if OldCoords == nil then
             OldCoords = Lastpos
