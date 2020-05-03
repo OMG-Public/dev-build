@@ -15,15 +15,6 @@ end
 
 
 
-RegisterNetEvent("OMG:SyncClient")
-AddEventHandler("OMG:SyncClient", function()
-    TriggerClientEvent("OMG:SendToken", source, token) -- Client side
-    local player = _player_get_identifier(source)
-    PlayersData[player].ServerID = source
-end)
-
-
-
 -- Token generation and sending
 
 

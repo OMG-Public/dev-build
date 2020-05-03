@@ -1,7 +1,3 @@
-Citizen.CreateThread(function()
-    TriggerServerEvent("OMG:SyncClient") -- Sync the client
-end)
-
 
 function TextWithTime(msg, duree)
     duree = duree or 500
