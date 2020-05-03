@@ -43,7 +43,8 @@ server_scripts {
 }
 
 client_scripts {
-	'config.lua',
+    'config.lua',
+    'items.lua',
 	-- Core
     'client/core/*.lua',
 	'client/*.lua',
